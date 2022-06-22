@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: requirements/nginx
+    ports:
+      - 443:443
+    volumes:
+      - volume-nginx:${NGINX_DATADIR}
+      - volume-logs-nginx:${NGINX_LOG_DIR}
+      - volume-wordpress:${WORDPRESS_DATADIR}
+    environment:
+      - NGINX_DATADIR=${NGINX_DATADIR}
+      - NGINX_LOG_DIR=${NGINX_LOG_DIR}
+      - WORDPRESS_DATADIR=${WORDPRESS_DATADIR}
+    links:
+      - wordpress
+    restart: always
+  mariadb:
+    build: requirements/mariadb
+    ports:
+      - 3306:3306
+    volumes:
+      - volume-mariadb:${MYSQL_DATADIR}
+    environment:
+      - MYSQL_DATADIR=${MYSQL_DATADIR}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    restart: always
+  wordpress:
+  #I need to build the right image
+    image: wordpress:4.7.1-php7.0-fpm
+    ports:
+      - 9000:9000
+    volumes:
+      - volume-wordpress:${WORDPRESS_DATADIR}
+    environment:
+      - WORDPRESS_DATADIR=${WORDPRESS_DATADIR}
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+    links:
+      - mariadb
+    restart: always
+
+volumes:
+  volume-mariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${VOLUME_PATH}/mariadb
+  volume-wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${VOLUME_PATH}/wordpress  
+  volume-nginx:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${VOLUME_PATH}/nginx
+  volume-logs-nginx:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${VOLUME_PATH}/nginx-logs
+    
