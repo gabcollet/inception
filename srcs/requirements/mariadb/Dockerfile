@@ -1,14 +1,13 @@
-FROM debian:buster
+FROM alpine:3.15
 
-RUN apt-get update
-RUN apt-get dist-upgrade -yq
-RUN apt-get install -yq mariadb-server
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/
+RUN apk add --update mariadb mariadb-client && mkdir /run/mysqld
 
 EXPOSE 3306
 
-HEALTHCHECK --start-period=5m \
-  CMD mariadb -e 'SELECT @@datadir;' || exit 1
+COPY ./tools/setup_mariadb.sh /tmp/setup_mariadb.sh
 
-CMD ["mysqld"]
+RUN chmod 777 /tmp/setup_mariadb.sh
+
+ENTRYPOINT [ "/tmp/setup_mariadb.sh" ]
+
+CMD ["mysqld", "--user=root", "--skip-networking=0"]
