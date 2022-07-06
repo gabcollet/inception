@@ -18,41 +18,42 @@ addgroup -g 99 nginx;
 adduser -u 99 -G nginx -D nginx;
 
 #CONFIGURATION FOR WORDPRESS
-sleep 2;
+sleep 3;
 
-cd /var/www/
-tar -xzf ./wordpress-6.0.tar.gz
-rm ./wordpress-6.0.tar.gz
-mv wordpress//* html/
-rm -rf wordpress
-wp core download;
-sleep 2;
+if [ ! -f "/var/www/html/wp-config.php" ]; then
+    echo INSTALLATION AND CONFIGURATION OF WORDPRESS;
+    cd /var/www/
+    tar -xzf ./wordpress-6.0.tar.gz
+    rm ./wordpress-6.0.tar.gz
+    mv wordpress//* html/
+    rm -rf wordpress
+    wp core download;
+    sleep 2;
 
+    wp config create --allow-root \
+                    --dbname=$MYSQL_DATABASE \
+                    --dbuser=$MYSQL_USER \
+                    --dbpass=$MYSQL_PASSWORD \
+                    --dbhost=$WP_DB_HOST \
+                    --dbcharset="utf8" \
+                    --dbcollate="utf8_general_ci" \
+                    --path="/var/www/html"
+    wp core install --allow-root \
+                    --title="Wordpress" \
+                    --admin_name="${MYSQL_USER}" \
+                    --admin_password="${MYSQL_PASSWORD}" \
+                    --admin_email="${MYSQL_EMAIL}" \
+                    --skip-email \
+                    --url="${DOMAIN_NAME}" \
+                    --path="/var/www/html"
+    wp user create --allow-root \
+                    $WP_DB_USER \
+                    $WP_EMAIL \
+                    --role=author \
+                    --user_pass=$WP_DB_PASSWORD \
+                    --path="/var/www/html"
 
-wp config create --allow-root \
-                --dbname=$MYSQL_DATABASE \
-                --dbuser=$MYSQL_USER \
-                --dbpass=$MYSQL_PASSWORD \
-                --dbhost=$WP_DB_HOST \
-                --dbcharset="utf8" \
-                --dbcollate="utf8_general_ci" \
-                --path="/var/www/html"
-wp core install --allow-root \
-                --title="Wordpress" \
-                --admin_name="${MYSQL_USER}" \
-                --admin_password="${MYSQL_PASSWORD}" \
-                --admin_email="${MYSQL_EMAIL}" \
-                --skip-email \
-                --url="${DOMAIN_NAME}" \
-                --path="/var/www/html"
-wp user create --allow-root \
-                $WP_DB_USER \
-                $WP_EMAIL \
-                --role=author \
-                --user_pass=$WP_DB_PASSWORD \
-                --path="/var/www/html"
-
-
-echo "WORDPRESS INSTALLED SUCCESSFULLY"
+    echo "WORDPRESS INSTALLED SUCCESSFULLY"
+fi
 
 exec "$@"
