@@ -1,36 +1,35 @@
 version: '3.8'
 
 services:
-#   mariadb: 
-#     container_name: "mariadb"
-#     build: ./requirements/mariadb
-#     restart: always
-#     env_file:
-#       - .env
-#     volumes: 
-#       - v_maria:/var/lib/mysql
-#     networks:
-#       - inception
+  mariadb: 
+    container_name: "mariadb"
+    build: ./requirements/mariadb
+    restart: always
+    env_file:
+      - .env
+    volumes: 
+      - v_maria:/var/lib/mysql
+    networks:
+      - inception
 
-  # wordpress:
-  #   container_name: "wordpress"
-  #   build: ./requirements/wordpress
-  #   depends_on:
-  #     - mariadb
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     # - v_wp:/var/www/html
-  #     - v_wp:/var/www/localhost/htdocs
-  #   networks:
-  #     - inception
-    # restart: always
+  wordpress:
+    container_name: "wordpress"
+    build: ./requirements/wordpress
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
+    volumes:
+      - v_wp:/var/www/html
+    networks:
+      - inception
+    restart: always
 
   nginx:
     container_name: "nginx"
     build: ./requirements/nginx
-    # depends_on:
-    #   - wordpress
+    depends_on:
+      - wordpress
     volumes:
       - v_wp:/var/www/html
     networks:
@@ -38,7 +37,9 @@ services:
     ports:
       # - 443:443
       - 80:80
-    # restart: always
+    links:
+      - wordpress
+    restart: always
 
 networks:
   inception:
