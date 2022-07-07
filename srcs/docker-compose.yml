@@ -4,13 +4,13 @@ services:
   mariadb: 
     container_name: "mariadb"
     build: ./requirements/mariadb
-    restart: always
     env_file:
       - .env
     volumes: 
       - v_maria:/var/lib/mysql
     networks:
       - inception
+    restart: always
 
   wordpress:
     container_name: "wordpress"
@@ -35,8 +35,7 @@ services:
     networks:
       - inception
     ports:
-      # - 443:443
-      - 80:80
+      - 443:443
     links:
       - wordpress
     restart: always

@@ -6,7 +6,7 @@
 #    By: gcollet <gcollet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/22 13:30:58 by gcollet           #+#    #+#              #
-#    Updated: 2022/07/04 12:41:49 by gcollet          ###   ########.fr        #
+#    Updated: 2022/07/07 11:26:04 by gcollet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ all: up
 
 up: 
 	sudo mkdir -p /home/gcollet/data/mysql
+	sudo mkdir -p /home/gcollet/data/html
 	docker-compose -f $(DIR)/docker-compose.yml up --build
 
 down:
@@ -48,5 +49,6 @@ destroy:
 	docker volume rm $(MY_VOL) || true
 	docker network rm $(MY_NET) || true
 	sudo rm -rf /home/gcollet/data/mysql
+	sudo rm -rf /home/gcollet/data/html
 
 .PHONY: all up down build clean destroy vclean

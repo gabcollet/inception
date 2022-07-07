@@ -4,9 +4,9 @@ RUN apk update && \
     apk add nginx
 
 COPY ./conf/default.conf /etc/nginx/http.d/default.conf
+COPY ./tools/server.crt /etc/ssl/server.crt
+COPY ./tools/server.key /etc/ssl/server.key
 
-EXPOSE 80
-# EXPOSE 443
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
-# CMD ["nginx", "-t"]

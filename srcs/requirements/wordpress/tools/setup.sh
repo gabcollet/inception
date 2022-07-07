@@ -1,25 +1,27 @@
 #!/usr/bin/env bash
 
-if [ ! -d "/var/www/html" ]; then
-    mkdir -p /var/www/html;
-fi
-cd /var/www/html;
-if [ -f "index.php" ]; then
-    rm index.php;
-fi
-chmod -R 777 /var/www/html;
-touch /var/www/html/index.php;
-echo "<?php phpinfo(); ?>" >> /var/www/html/index.php;
+#THIS IS ALL FOR TESTING PHP
+# if [ ! -d "/var/www/html" ]; then
+#     mkdir -p /var/www/html;
+# fi
+# cd /var/www/html;
+# if [ -f "index.php" ]; then
+#     rm index.php;
+# fi
+# chmod -R 777 /var/www/html;
+# touch /var/www/html/index.php;
+# echo "<?php phpinfo(); ?>" >> /var/www/html/index.php;
 
-if [ ! -d "var/run/php/" ]; then
-    mkdir -p var/run/php/;
-fi
+# if [ ! -d "var/run/php/" ]; then
+#     mkdir -p var/run/php/;
+# fi
+
+#CREATING A USER FOR ACCESS TO MARIADB
 addgroup -g 99 nginx;
 adduser -u 99 -G nginx -D nginx;
 
 #CONFIGURATION FOR WORDPRESS
-sleep 3;
-
+sleep 3
 if [ ! -f "/var/www/html/wp-config.php" ]; then
     echo INSTALLATION AND CONFIGURATION OF WORDPRESS;
     cd /var/www/
@@ -28,7 +30,6 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
     mv wordpress//* html/
     rm -rf wordpress
     wp core download;
-    sleep 2;
 
     wp config create --allow-root \
                     --dbname=$MYSQL_DATABASE \

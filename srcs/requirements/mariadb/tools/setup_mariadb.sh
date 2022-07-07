@@ -2,10 +2,12 @@
 
 DB_DIR=/var/lib/mysql/$MYSQL_DATABASE
 
+#INITIALIZE THE MYSQL DATA DIRECTORY AND CREATE THE SYSTEM TABLES
 if [ ! -d "/var/lib/mysql/mysql" ]; then
   mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=root --rpm --skip-test-db > /dev/null
 fi
 
+#INITIALIZE THE WORDPRESS DATABASE AND ADD A USER
 if [ -d $DB_DIR ]; then
   echo "$MYSQL_DATABASE ALREADY EXISTS."
 else
