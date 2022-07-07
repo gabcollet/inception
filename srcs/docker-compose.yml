@@ -36,8 +36,6 @@ services:
       - inception
     ports:
       - 443:443
-    links:
-      - wordpress
     restart: always
 
 networks:
