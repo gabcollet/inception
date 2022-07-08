@@ -21,8 +21,8 @@ NETWORK		=	$(eval MY_NET=$(shell docker network ls -q))
 all: up
 
 up: 
-	sudo mkdir -p /home/gcollet/data/mysql
-	sudo mkdir -p /home/gcollet/data/html
+	mkdir -p /home/gcollet/data/mysql
+	mkdir -p /home/gcollet/data/html
 	docker-compose -f $(DIR)/docker-compose.yml up --build
 
 down:
@@ -48,7 +48,7 @@ destroy:
 	docker rmi -f $(MY_IMG) || true
 	docker volume rm $(MY_VOL) || true
 	docker network rm $(MY_NET) || true
-	sudo rm -rf /home/gcollet/data/mysql
-	sudo rm -rf /home/gcollet/data/html
+	rm -rf /home/gcollet/data/mysql
+	rm -rf /home/gcollet/data/html
 
 .PHONY: all up down build clean destroy vclean
