@@ -21,7 +21,15 @@ addgroup -g 99 nginx;
 adduser -u 99 -G nginx -D nginx;
 
 #CONFIGURATION FOR WORDPRESS
-sleep 3
+for i in {0..30}; do
+    if mariadb -hmariadb -u$MYSQL_USER -p$MYSQL_PASSWORD --database=$MYSQL_DATABASE <<<'SELECT 1;' &>/dev/null; then
+        break
+    fi
+        sleep 2
+done
+if [ "$i" = 30 ]; then
+    echo "Can't connect to database"
+fi
 if [ ! -f "/var/www/html/wp-config.php" ]; then
     echo INSTALLATION AND CONFIGURATION OF WORDPRESS;
     cd /var/www/
